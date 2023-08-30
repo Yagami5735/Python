@@ -2,28 +2,36 @@ ini_state = [[1, 6, 3],
              [2, 7, 8],
              [4, 5, 0]]
 
-final_state = [[1, 2, 3],
-               [4, 5, 6],
-               [7, 8, 0]]
+def final_state(): 
+    finalState = [[1, 2, 3],
+                  [4, 5, 6],
+                  [7, 8, 0]]
 
 
-def find(val):
-    for i in range(3):
-        for j in range(3):
-            if final_state[i][j] == val:
-                x1 = i
-                y1 = j
+def find():
+    for i in range(len(ini_state)):
+        for j in range(len(ini_state)):
+            if ini_state[i][j] == 0:
                 break
-    return x1, y1
+    return i, j
 
-def moves():
+def moves(matrix, posX,  posY, nposX, nposY):
+    nMatrix = []
+    for i in range(len(matrix)):
+        np = []
+        for j in range(len(matrix)):
+            np.append(matrix[i][j])
+            
+        nMatrix.append(np)
     
+    aux = nMatrix[posX][posY]
+    nMatrix[posX][posY] = nMatrix[nposX][nposY]
+    nMatrix[nposX][nposY] = aux
 
+    return nMatrix
 
-def Fs(est, moves):
-    if moves() == 'up' and est <= 0 and est < 3:
-        aux = ini_state.pop(x)
-        ini_state[1][2] = aux
+print(find())
 
-
-print(find(0))
+def res(ini, final):
+    while(ini!=final):
+        if(find() == ):
