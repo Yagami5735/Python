@@ -1,3 +1,5 @@
+import copy
+
 ini_state = [[8, 6, 1],
              [7, 5, 2],
              [4, 3, 0]]
@@ -40,7 +42,8 @@ def move(matrix, posX,  posY, nposX, nposY):
 
     return nMatrix
 
-
+'''obs: eu sei que está invertido, o código é refênte ao movimento do zero, porém o que se movimenta realmente, 
+são as peças adjacentes, portanto escrevi invertido'''
 
 def aval(movimento):
     if movimento == movimentos[0]:
@@ -49,19 +52,19 @@ def aval(movimento):
         else:
             return False
         
-    if movimento == movimentos[1]:
+    if movimento == movimentos[1]: #limitação para ir para baixo
         if find()[0] != 0:
             return 'UP'
         else:
             return False
     
-    if movimento == movimentos[2]:
+    if movimento == movimentos[2]: #limtação para ir à direita
         if find()[1] != 0:
             return 'LEFT'
         else:
              return False
     
-    if movimento == movimentos[3]:
+    if movimento == movimentos[3]: #limitação para ir à esquerda
         if find()[1] != 2:
             return 'RIGHT'
         else:
