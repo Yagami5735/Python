@@ -1,14 +1,18 @@
-ini_state = [[1, 5, 3],
-             [2, 0, 7],
-             [4, 8, 6]]
+ini_state = [[8, 6, 1],
+             [7, 5, 2],
+             [4, 3, 0]]
 
 movimentos = ['UP', 'DOWN', 'RIGHT', 'LEFT']
-flag = True
+
 
 def final_state(): 
     finalState = [[1, 2, 3],
                   [4, 5, 6],
                   [7, 8, 0]]
+    if ini_state == finalState:
+        return False
+    else:
+        return True
 
 
 def find():
@@ -39,63 +43,55 @@ def move(matrix, posX,  posY, nposX, nposY):
 
 
 def aval(movimento):
-    find()
-    coordX = find().pop()
-    coordY = find().pop()
     if movimento == movimentos[0]:
-        if coordX != 0: #limitação pra ir para cima
-            return 'UP'
+        if find()[0] != 2: #limitação pra ir para cima
+            return 'DOWN'
+        else:
+            return False
         
     if movimento == movimentos[1]:
-        if coordX != 2:
-            return 'DOWN'
+        if find()[0] != 0:
+            return 'UP'
+        else:
+            return False
     
     if movimento == movimentos[2]:
-        for i in range(len(ini_state)):
-            for j in range(len(ini_state)):
-                if coordY != 2:
-                    return 'RIGHT'
+        if find()[1] != 0:
+            return 'LEFT'
+        else:
+             return False
     
     if movimento == movimentos[3]:
-        for i in range(len(ini_state)):
-            for j in range(len(ini_state)):
-                if coordY != 0:
-                    return 'LEFT'
+        if find()[1] != 2:
+            return 'RIGHT'
+        else:
+            return False
 
 
 
-while True:
-    find()
-    coordX = find().pop()
-    coordY = find().pop()
-    if(flag == True):
+while final_state():
+    print('=' * 30)
+    print(ini_state[0])
+    print(ini_state[1])
+    print(ini_state[2])
+    print('=' * 30)
+    print('=' * 30)
 
-        movimento = input("Digite o movimento: ").upper().strip()
+    movimento = input("Digite o movimento: ").upper().strip()
+    
+    print('=' * 30)
+    if(aval(movimento) == 'UP'):
+        ini_state = move(ini_state, find()[0], find()[1], find()[0]-1, find()[1])
 
-        if(aval(movimento) == 'UP'):
-            move(ini_state, coordX, coordY, coordX+1, coordY)
-            print('=' * 30)
-            print(ini_state)
-            print('=' * 30)
+    if(aval(movimento) == 'DOWN'):
+        ini_state = move(ini_state, find()[0], find()[1], find()[0]+1, find()[1])
 
-        if(aval(movimento) == 'DOWN'):
-            move(ini_state, coordX, coordY, coordX-1, coordY)
-            print('=' * 30)
-            print(ini_state)
-            print('=' * 30)
+    if(aval(movimento) == 'RIGHT'):
+        ini_state = move(ini_state, find()[0], find()[1], find()[0], find()[1]+1)
 
-        if(aval(movimento) == 'RIGHT'):
-            move(ini_state, coordX, coordY, coordX, coordY+1)
-            print('=' * 30)
-            print(ini_state)
-            print('=' * 30)
+    if(aval(movimento) == 'LEFT'):
+        ini_state = move(ini_state, find()[0], find()[1], find()[0], find()[1]-1)
 
-        if(aval(movimento) == 'LEFT'):
-            move(ini_state, coordX, coordY, coordX, coordY-1)
-            print('=' * 30)
-            print(ini_state)
-            print('=' * 30)
-
-
+print("Parabénss Você Completou o Puzzle!")
 
 
