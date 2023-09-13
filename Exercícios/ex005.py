@@ -1,3 +1,7 @@
 sla = ['UP', 'DOWN', 'HI']
 
-print(sla[2])
+sla.pop(0)
+print(sla)
+
+sla.pop(0)
+print(sla)
