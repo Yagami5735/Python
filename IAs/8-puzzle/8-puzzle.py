@@ -1,27 +1,24 @@
 import copy
-from collections import deque
-from time import sleep
-ini_state = [[1, 2, 3],
-             [4, 0, 5],
-             [7, 8, 6]]
 
+#definindo a matrix
+ini_state = [[1, 2, 3],   
+             [7, 8, 6],
+             [4, 5, 0]]
 
-movimentos = [0, 1, 2, 3]
+#definindo os movimentos
+movimentos = [0, 1, 2, 3] 
 
 state = copy.deepcopy(ini_state)
 
 
-def final_state():
+def final_state(matrix):      
     finalState = [[1, 2, 3],
                   [4, 5, 6],
                   [7, 8, 0]]
-    if state == finalState:
-        return False
-    else:
-        return True
+    return matrix == finalState
 
-
-def find(matrix):
+#Função para achar o vazio
+def find(matrix):                  
     pos0 = []
     for i in range(len(matrix)):
         for j in range(len(matrix)):
@@ -31,102 +28,81 @@ def find(matrix):
                 break
     return pos0
 
-
+#Função para o momvimento
 def move(matrix, posX,  posY, nposX, nposY):
     nMatrix = []
     for i in range(len(matrix)):
         np = []
         for j in range(len(matrix)):
             np.append(matrix[i][j])
-
-        nMatrix.append(np)
-
+        #copia a matrix para "nMatrix"
+        nMatrix.append(np) 
+    #altera as posições
     aux = nMatrix[posX][posY]
     nMatrix[posX][posY] = nMatrix[nposX][nposY]
     nMatrix[nposX][nposY] = aux
 
     return nMatrix
 
-
-'''obs: eu sei que está invertido, o código é refênte ao movimento do zero, porém o que se movimenta realmente, 
-são as peças adjacentes, portanto escrevi invertido'''
-
-
-def aval(movimento):
-    if movimento == movimentos[0]:
-        if find(state)[0] != 2:  # limitação pra ir para cima
-            return 'DOWN'
-
-    if movimento == movimentos[1]:  # limitação para ir para baixo
-        if find(state)[0] != 0:
-            return 'UP'
-
-    if movimento == movimentos[2]:  # limtação para ir à direita
-        if find(state)[1] != 0:
-            return 'LEFT'
-
-    if movimento == movimentos[3]:  # limitação para ir à esquerda
-        if find(state)[1] != 2:
-            return 'RIGHT'
+def Fs(matrix, dir):
+    #define as linhas e as colunas para delimitar os movimentos
+    lin = len(matrix)
+    col = len(matrix[0])
+    #checa se o movimento é válido, se for, ele permite o movimento
+    if dir == "acima" and find(matrix)[0] > 0:
+        return move(matrix, find(matrix)[0], find(matrix)[1], find(matrix)[0] - 1, find(matrix)[1])
+    elif dir == "abaixo" and find(matrix)[0] < lin - 1:
+        return move(matrix, find(matrix)[0], find(matrix)[1], find(matrix)[0] + 1, find(matrix)[1])
+    elif dir == "esquerda" and find(matrix)[1] > 0:
+        return move(matrix, find(matrix)[0], find(matrix)[1], find(matrix)[0], find(matrix)[1] - 1)
+    elif dir == "direita" and find(matrix)[1] < col - 1:
+        return move(matrix, find(matrix)[0], find(matrix)[1], find(matrix)[0], find(matrix)[1] + 1)
+    else:
+        return None
 
 
-move_state = [0, 1, 2, 3]
-counter = 0
-c = 0
-n = 1
-aux2 = 0
-exp = 4
-inc = 4
+def bfs(matrix):
+  count = 0
+  #define a fila
+  fila = [(matrix, [])]#Tupla:(estado do tabuleiro, lista de movimentos)
+  visitados = [matrix]#copia a matrix em visitados
 
-maux = copy.deepcopy(state)
-laux = copy.deepcopy(move_state)
-while final_state():
+  while fila:
+    #guarda o movimento atual e os movimentos realizados
+    atual, movimentos_realizados = fila.pop(0)
 
-    print('Movimentos: '+str(counter))
-    print(move_state)
-    for i in range(n):
-        if (aval(move_state[0]) == 'UP'):
-            print('cima')
-            state = move(state, find(state)[0], find(state)[
-                1], find(state)[0]-1, find(state)[1])
+    #quando o 8-puzzle for resolvido, ele retorna os movimentos realizados para resolvê-lo
+    if final_state(atual):
+      return movimentos_realizados
+    
+    #dá início ao looping da fila
+    for dir in ["acima", "abaixo", "esquerda", "direita"]:
+      novo_atual = Fs(atual, dir)
 
-        if (aval(move_state[0]) == 'DOWN'):
-            print('baixo')
-            state = move(state, find(state)[0], find(state)[
-                1], find(state)[0]+1, find(state)[1])
+      #adiciona os elementos no final da fila
+      if novo_atual and novo_atual not in visitados:
+        visitados.append(novo_atual)
+        fila.append((novo_atual, movimentos_realizados + [dir]))
+    
+    count+=1
+    print(count)
+  return None
 
-        if (aval(move_state[0]) == 'RIGHT'):
-            print('direita')
-            state = move(state, find(state)[0], find(state)[
-                1], find(state)[0], find(state)[1]+1)
+tabuleiro_final = bfs(ini_state)
 
-        if (aval(move_state[0]) == 'LEFT'):
-            print('esquerda')
-            state = move(state, find(state)[0], find(state)[
-                1], find(state)[0], find(state)[1]-1)
+#se ele achar uma solução ele printa a solução
+if tabuleiro_final:
+  print("Solução encontrada!")
+  tabuleiro_atual = state
+  for dir in tabuleiro_final:
 
-        aux = move_state.pop(0)
-        for i in range(inc):
-            move_state.append(aux)
-            move_state.append(laux[i])
-        for i in range(aux2):
-            laux.pop(0)
+    #Atualiza o tabuleiro atual com o movimento
+    tabuleiro_atual = Fs(tabuleiro_atual, dir)
+    print(f"Movimento: {dir}")
 
-        laux = copy.deepcopy(move_state)
-
-    c += 1
-    if (c == exp):
-        n += 1
-        aux2 += 1
-        exp = exp * 4
-        inc = inc * 4
-
-    state = copy.deepcopy(maux)
-
-    sleep(1)
-    print(state[0])
-    print(state[1])
-    print(state[2])
-    print('=' * 30)
-    counter += 1
-print("Parabénss Você Completou o Puzzle!")
+    for linha in tabuleiro_atual:
+      print(linha)
+    print()
+  print("8-Puzzle resolvido!")
+else:
+  print("Não foi possível solucionar.")
