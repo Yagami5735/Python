@@ -1,7 +1,7 @@
-sla = ['UP', 'DOWN', 'HI']
+test = ['UP', 'DOWN', 'HI']
 
-sla.pop(0)
-print(sla)
+test.pop(0)
+print(test)
 
-sla.pop(0)
-print(sla)
+test.pop(0)
+print(test)
